@@ -1,11 +1,12 @@
 import { Injectable, signal, effect } from "@angular/core";
+import { BonusCalculator } from "./bonus-calculator.service";
 
 @Injectable({ providedIn: 'root' })
 export class BankAccount {
 
     private balance = signal(0);
 
-    constructor() {
+    constructor(private bonusCalculator: BonusCalculator) {
         let savedBalance = localStorage.getItem('balance');
         if (savedBalance != null) {
             this.balance.set(parseFloat(savedBalance));
@@ -22,10 +23,12 @@ export class BankAccount {
     makeDeposit(amount: number) {
         // send it to an API,
         // calculate a bonus
-        this.balance.set(this.balance() + amount);
+        let bonus = this.bonusCalculator.calculateBonusForDepositOn(this.balance(), amount);
+        this.balance.set(this.balance() + amount + bonus);
     }
 
     makeWithdrawal(amount: number) {
+
         this.balance.set(this.balance() - amount);
     }
 }

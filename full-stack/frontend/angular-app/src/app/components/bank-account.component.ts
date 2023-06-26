@@ -1,4 +1,4 @@
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, NgIf } from "@angular/common";
 import { Component, Signal, signal } from "@angular/core";
 import { BankAccount } from "../services/bank-account.service";
 
@@ -11,25 +11,37 @@ import { BankAccount } from "../services/bank-account.service";
 <span>Your balance is {{balance() | currency}}</span>
 </section>
 <section>
-<label>Amount: <input type="number" #amount /></label>
+<label>Amount: <input type="number" #amount (keyup)="checkForOverdraft(amount.valueAsNumber)"/></label>
 </section>
+<div *ngIf="overdraftWarning() === true" class="alert alert-warning">
+        <p>That would overdraft your account!</p>
+</div>
 <section>
 <button class="btn btn-primary" (click)="deposit(amount)">Deposit</button>
-<button (click)="withdraw(amount)">Withdraw</button>
+<button [disabled]="overdraftWarning()==true" (click)="withdraw(amount)">Withdraw</button>
 </section>
 
     `,
-    imports: [CurrencyPipe],
+    imports: [CurrencyPipe, NgIf],
     standalone: true
 })
 export class BankAccountComponent {
 
-    private account: BankAccount;
+    // private account: BankAccount;
     balance: Signal<number>;
+    overdraftWarning = signal(false);
 
-    constructor(account: BankAccount) {
-        this.account = account;
+    constructor(private account: BankAccount) {
         this.balance = account.getBalance();
+        this.balance = account.getBalance();
+    }
+
+    checkForOverdraft(amount: number) {
+        if (amount > this.balance()) {
+            this.overdraftWarning.set(true);
+        } else {
+            this.overdraftWarning.set(false);
+        }
     }
 
     deposit(amount: HTMLInputElement) {
