@@ -1,35 +1,36 @@
-import { Injectable, signal, effect } from "@angular/core";
-import { BonusCalculator } from "./bonus-calculator.service";
+import { Injectable, signal, effect } from '@angular/core';
+import { BonusCalculator } from './bonus-calculator.service';
 
 @Injectable({ providedIn: 'root' })
 export class BankAccount {
+  private balance = signal(0);
 
-    private balance = signal(0);
-
-    constructor(private bonusCalculator: BonusCalculator) {
-        let savedBalance = localStorage.getItem('balance');
-        if (savedBalance != null) {
-            this.balance.set(parseFloat(savedBalance));
-        }
-        effect(() => {
-            //simulated API call
-            localStorage.setItem('balance', this.balance().toString());
-        })
+  constructor(private bonusCalculator: BonusCalculator) {
+    const savedBalance = localStorage.getItem('balance');
+    if (savedBalance != null) {
+      this.balance.set(parseFloat(savedBalance));
     }
+    effect(() => {
+      //simulated API call
+      localStorage.setItem('balance', this.balance().toString());
+    });
+  }
 
-    getBalance() {
-        return this.balance.asReadonly();
-    }
+  getBalance() {
+    return this.balance.asReadonly();
+  }
 
-    makeDeposit(amount: number) {
-        // send it to an API,
-        // calculate a bonus
-        let bonus = this.bonusCalculator.calculateBonusForDepositOn(this.balance(), amount);
-        this.balance.set(this.balance() + amount + bonus);
-    }
+  makeDeposit(amount: number) {
+    // send it to an API,
+    // calculate a bonus
+    const bonus = this.bonusCalculator.calculateBonusForDepositOn(
+      this.balance(),
+      amount,
+    );
+    this.balance.set(this.balance() + amount + bonus);
+  }
 
-    makeWithdrawal(amount: number) {
-
-        this.balance.set(this.balance() - amount);
-    }
+  makeWithdrawal(amount: number) {
+    this.balance.set(this.balance() - amount);
+  }
 }

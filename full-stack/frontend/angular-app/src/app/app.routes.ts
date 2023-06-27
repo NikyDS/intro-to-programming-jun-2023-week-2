@@ -16,6 +16,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/shopping-list/shopping-list.routes').then(m => m.SHOPPING_LIST_ROUTES)
     },
     {
+        path: 'counter',
+        loadChildren: () =>
+          import('./features/counter/counter.routes').then((m) => m.COUNTER_ROUTES),
+    },    
+    {
         path: '**',
         redirectTo: 'home'
     }
