@@ -12,6 +12,7 @@ export class BankAccount {
             this.balance.set(parseFloat(savedBalance));
         }
         effect(() => {
+            //simulated API call
             localStorage.setItem('balance', this.balance().toString());
         })
     }
