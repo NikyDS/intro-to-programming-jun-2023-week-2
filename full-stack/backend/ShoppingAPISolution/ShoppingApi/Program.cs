@@ -1,6 +1,7 @@
 using ShoppingApi.Controllers;
 using ShoppingApi.Data;
 using Microsoft.EntityFrameworkCore;
+using ShoppingApi.Controllers.ShoppingList;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<ShoppingDataContext>(options =>
 });
 
 builder.Services.AddScoped<ILookupTheStatus, StatusLookup>();
+builder.Services.AddScoped<IManageTheShoppingList, PostgresShoppingManager>();
 
 var app = builder.Build();
 
