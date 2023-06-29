@@ -12,6 +12,8 @@ public class ShoppingListController : ControllerBase
     [HttpGet("/shopping-list")]
     public async Task<ActionResult> GetShoppingList()
     {
+        await Task.Delay(3000);
+
         CollectionResponse<ShoppingListItemModel> response = await _shoppingListManager.GetShoppingListAsync();
         return Ok(response);
 
