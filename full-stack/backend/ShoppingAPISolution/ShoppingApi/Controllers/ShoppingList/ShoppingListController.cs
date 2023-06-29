@@ -10,11 +10,11 @@ public class ShoppingListController : ControllerBase
     }
 
     [HttpGet("/shopping-list")]
-    public async Task<ActionResult> GetShoppingList()
+    public async Task<ActionResult> GetShoppingList(CancellationToken cancellationToken)
     {
-        await Task.Delay(3000);
-
+        
         CollectionResponse<ShoppingListItemModel> response = await _shoppingListManager.GetShoppingListAsync();
+
         return Ok(response);
 
     }
